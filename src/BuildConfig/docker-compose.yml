@@ -1,0 +1,15 @@
+﻿services:
+  mediatorapi:
+    image: mediatorapi
+    build:
+      context: .
+      dockerfile: MediatorAPI/Dockerfile
+    user: root
+    ports:
+      - 5000:8080
+    env_file: .env
+  postgres:
+      image: postgres:latest
+      env_file: .env
+      ports:
+        - 5430:5432
