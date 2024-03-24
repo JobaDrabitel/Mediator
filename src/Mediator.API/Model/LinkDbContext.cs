@@ -13,17 +13,20 @@ public class LinkDbContext(DbContextOptions<LinkDbContext> dbContextOptions) : D
         {
             entity.HasKey(u => u.Id);
             entity.Property(u => u.Email).IsRequired().HasMaxLength(50);
+            entity.Property(u => u.Id).ValueGeneratedOnAdd();
         });
+            
 
         modelBuilder.Entity<Link>(entity =>
         {
             entity.HasKey(l => l.Id);
             entity.Property(l => l.OriginalUrl).IsRequired().HasMaxLength(255);
-            entity.Property(l => l.ShortenedUrl).IsRequired().HasMaxLength(100);
+            entity.Property(l => l.ShorteredUrl).IsRequired().HasMaxLength(100);
             entity.HasOne(l => l.User)
                 .WithMany(u => u.Links)
                 .HasForeignKey(l => l.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(l => l.Id).ValueGeneratedOnAdd();
         });
     }
 }

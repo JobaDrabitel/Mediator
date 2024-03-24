@@ -7,17 +7,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MediatorAPI/MediatorAPI.csproj", "MediatorAPI/"]
-RUN dotnet restore "MediatorAPI/MediatorAPI.csproj"
+COPY ["Mediator.API/Mediator.API.csproj", "Mediator.API/"]
+RUN dotnet restore "Mediator.API/Mediator.API.csproj"
 COPY . .
-WORKDIR "/src/MediatorAPI"
-RUN dotnet build "MediatorAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Mediator.API"
+RUN dotnet build "Mediator.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "MediatorAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Mediator.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MediatorAPI.dll"]
+ENTRYPOINT ["dotnet", "Mediator.API.dll"]

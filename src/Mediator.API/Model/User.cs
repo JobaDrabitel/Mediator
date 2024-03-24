@@ -1,4 +1,6 @@
-﻿namespace Mediator.API.Model;
+﻿using System.Text.Json.Serialization;
+
+namespace Mediator.API.Model;
 
 public class User
 {
@@ -6,5 +8,5 @@ public class User
     public string Email { get; set; }
     
     public string Password { get; set; }
-    public ICollection<Link> Links { get; set; }
+    [JsonIgnore] public ICollection<Link> Links { get; set; }
 }
