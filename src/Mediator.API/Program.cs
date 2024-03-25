@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServices();
@@ -64,12 +65,21 @@ app.MapDelete("user/delete", async ([FromBody] UserDeleteCommand command, [FromS
     return result == "Ok"? Results.Ok() : Results.BadRequest(result);
 });
 
-app.MapGet("/{link}", async (string link, LinkDbContext dbContext) =>
+app.MapGet("/{link}", async (string link, LinkDbContext dbContext, IMemoryCache cache) =>
 {
-    var fullLink = await dbContext.Links.FirstOrDefaultAsync(l => l.ShorteredUrl == $"http://localhost:5196/{link}");
-    return fullLink is null ? Results.BadRequest() : Results.Redirect(fullLink.OriginalUrl);
+    var cacheKey = $"shortLink:{link}";
+    if (cache.TryGetValue(cacheKey, out Link? fullLink))
+        return fullLink is null ? Results.BadRequest() : Results.Redirect(fullLink.OriginalUrl);
+    fullLink = await dbContext.Links.FirstOrDefaultAsync(l => l.ShorteredUrl == $"http://localhost:5000/{link}");
+
+    if (fullLink is null) return Results.BadRequest();
+    var cacheEntryOptions = new MemoryCacheEntryOptions()
+        .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+    cache.Set(cacheKey, fullLink, cacheEntryOptions);
+
+    return Results.Redirect(fullLink.OriginalUrl);
 });
 
+
 app.Run();
-return;
 

@@ -15,6 +15,7 @@ public static class ApplicationBuilderExtension
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
+        builder.Services.AddMemoryCache();
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
         builder.Services.AddDbContextFactory<LinkDbContext>(optionsBuilder =>
         {

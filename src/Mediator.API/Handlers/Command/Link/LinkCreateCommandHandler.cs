@@ -1,8 +1,6 @@
 ﻿using Mediator.API.Model;
 using Mediator.API.Model.Records.Commands.Link;
-using Mediator.API.Model.Records.Commands.User;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Mediator.API.Handlers.Command.Link;
 
