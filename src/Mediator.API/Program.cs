@@ -1,12 +1,9 @@
 using Mediator.API.Extensions;
 using Mediator.API.Model;
-using Mediator.API.Model.Records.Commands;
 using Mediator.API.Model.Records.Commands.Link;
 using Mediator.API.Model.Records.Commands.User;
-using Mediator.API.Model.Records.Requests;
 using Mediator.API.Model.Records.Requests.User;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -26,7 +23,7 @@ app.MapPost("user/login", async ([FromBody] UserLoginRequest loginRequest, [From
         var token = await mediator.Send(loginRequest);
         return Results.Ok(new { Token = token });
     }
-    catch (Exception ex)
+    catch
     {
         return Results.Unauthorized();
     }

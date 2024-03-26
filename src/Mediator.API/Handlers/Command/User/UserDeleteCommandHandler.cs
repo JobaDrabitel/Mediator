@@ -2,6 +2,7 @@
 using Mediator.API.Model.Records.Commands.User;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Mediator.API.Handlers.Command;
 
