@@ -4,6 +4,7 @@ using Mediator.API.Model.Records.Commands.Link;
 using Mediator.API.Model.Records.Commands.User;
 using Mediator.API.Model.Records.Requests.User;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -29,7 +30,7 @@ app.MapPost("user/login", async ([FromBody] UserLoginRequest loginRequest, [From
     }
 });
 
-app.MapPost("link/create", async ([FromBody] string link, IMediator mediator, HttpContext httpContext) =>
+app.MapPost("link/create", [Authorize] async ([FromBody] string link, IMediator mediator, HttpContext httpContext) =>
 {
     var user = (User)httpContext.Items["User"]!;
     var newLink = await mediator.Send(new LinkCreateCommand(link, user.Id));
@@ -56,7 +57,7 @@ app.MapPost("user/registration", async ([FromBody]UserRegisterCommand command, [
     }
 });
 
-app.MapDelete("user/delete", async ([FromBody] UserDeleteCommand command, [FromServices] IMediator mediator) =>
+app.MapDelete("user/delete", [Authorize] async ([FromBody] UserDeleteCommand command, [FromServices] IMediator mediator) =>
 {
     var result = await mediator.Send(command);
     return result == "Ok"? Results.Ok() : Results.BadRequest(result);

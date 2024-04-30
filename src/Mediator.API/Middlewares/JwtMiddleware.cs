@@ -12,13 +12,13 @@ public class JwtMiddleware(RequestDelegate next)
         var token = context.Request.Cookies["JWT-Token"];
         if (!string.IsNullOrEmpty(token))
         {
-            AttachUserToContext(context, dbContext, token, configuration);
+            await AttachUserToContext(context, dbContext, token, configuration);
         }
 
         await next(context);
     }
 
-    private static void AttachUserToContext(HttpContext context, LinkDbContext dbContext, string token, IConfiguration configuration)
+    private static async Task AttachUserToContext(HttpContext context, LinkDbContext dbContext, string token, IConfiguration configuration)
     {
         try
         {
@@ -37,7 +37,7 @@ public class JwtMiddleware(RequestDelegate next)
             var uniqueName = jwtToken.Claims.First().Value;
             var userId = int.Parse(uniqueName);
 
-            context.Items["User"] = dbContext.Users.Find(userId);
+            context.Items["User"] = await dbContext.Users.FindAsync(userId);
         }
         catch
         {
